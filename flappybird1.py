@@ -54,19 +54,24 @@ ysize = randint(0, 350)
 space = 150
 pipespeed = 2.5
 points = 0
-
+lastKey = 0
 # main program loop
 while not done:
     for event in pygame.event.get():  # game interaction
         if event.type == pygame.QUIT:
             done = True
-
         if event.type == pygame.KEYDOWN:  # to start the game?
-            if event.key == pygame.K_UP | pygame.K_w | pygame.K_SPACE:
+            if event.key == pygame.K_UP:
                 y_speed = -10
-
+                lastKey = pygame.K_UP
+            elif event.key == pygame.K_w:
+                y_speed = -10
+                lastKey = pygame.K_w
+            elif event.key == pygame.K_SPACE:
+                y_speed = -10
+                lastKey = pygame.K_SPACE
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP | pygame.K_w | pygame.K_SPACE:  # release key
+            if event.key == lastKey:  # release key
                 y_speed = 5
 
                 #   screen.fill(white)
