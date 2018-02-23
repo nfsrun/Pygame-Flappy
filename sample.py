@@ -78,8 +78,6 @@ def score(points):
     screen.blit(text, [1, 1])
 
 
-# handle crash??
-
 while not done and start:
 
     for event in pygame.event.get():  # game interaction
@@ -113,16 +111,16 @@ while not done and start:
     if len(hit_list) != 0:
         done = True  # quit the whole program
         gameOver()
-    y += y_speed
+    y += y_speed/2
     xloc -= pipespeed
 
     if y > ground:
         gameOver()
-        y_speed = 0
+        y_speed = y_speed/2
         pipespeed = 0
 
         gameOver()
-        y_speed = 0
+        y_speed = y_speed/2
         pipespeed = 0
         done = True
 
@@ -134,6 +132,6 @@ while not done and start:
         points = (points + 1)
 
     pygame.display.flip()
-    clock.tick(40)
+    clock.tick(60)
 
 quit();
