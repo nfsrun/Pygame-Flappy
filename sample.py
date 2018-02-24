@@ -13,7 +13,7 @@ flappy = Bird()
 
 highScore = 0
 
-size = 700,500
+size = 700, 500
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Flappy Bird")
 all = pygame.sprite.Group()
@@ -46,8 +46,8 @@ space = 100
 pipespeed = 2.5
 points = 0
 lastKey = 0
-allPipes.add(Pipe(0, xloc, yloc + ysize + space))
-allPipes.add(Pipe(1, xloc, yloc))
+allPipes.add(Pipe(0, xloc, yloc, space))
+allPipes.add(Pipe(1, xloc, yloc, space))
 
 # start game screen
 start = False
@@ -102,7 +102,7 @@ while not done and start:
     screen.blit(bg, [0, 0])
     flappy.update(x, y)
 
-    allPipes.update(xloc, ysize)
+    allPipes.update(xloc, yloc, space)
     all.draw(screen)
     allPipes.draw(screen)
     score(points)
@@ -126,7 +126,8 @@ while not done and start:
 
     if xloc < -80: # 80 px from the last pipe, draw the next one
         xloc = 700  # reset, x coordinate of drawing next pipe
-        ysize = randint(100, 325)  # reset gap between pipes
+        ysize = randint(100, 300)  # reset gap between pipes
+        yloc = randint(200, 500-ysize)
 
     if x > xloc and x < xloc + 3: # made it past the pipe
         points = (points + 1)
