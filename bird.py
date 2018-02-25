@@ -11,3 +11,4 @@ class Bird(pygame.sprite.Sprite):
 
     def update(self, x, y):
         self.rect = pygame.Rect(x, y, 39, 30)
+        self.mask = pygame.mask.from_surface(self.image) #make an updated mask out of the image
