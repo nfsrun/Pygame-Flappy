@@ -13,7 +13,7 @@ flappy = Bird()
 
 highScore = 0
 
-size = 700,500
+size = 700, 500
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Flappy Bird")
 all = pygame.sprite.Group()
@@ -35,19 +35,24 @@ y_speed = 0
 ground = 495
 #position to start drawing  pipes
 xloc = 700
-yloc = 0 # we will determine this by a random call
+yloc = randint(250, 400) # we will determine this by a random call
 
 # size of the pipes LxW
 xsize = 100
 ysize = randint(100, 325)
-#passage for bird between pipes
+#passage for bird between pipes  will  be randomized per pass
 space = 100
 # speed to draw a pipe, make pipe visual on screen
-pipespeed = 2.5
+pipespeed = 3.5
 points = 0
 lastKey = 0
-allPipes.add(Pipe(0, xloc, yloc + ysize + space))
-allPipes.add(Pipe(1, xloc, yloc))
+
+bottomPipe = Pipe(1, xloc, yloc, space)
+topPipe = Pipe(0, xloc,bottomPipe.rect.y, space)
+
+allPipes.add(topPipe) #IMPORTANT THIS GOES FIRST LOOOOL OR IT WONT CALCULATE  IT CORRECTLY OMG
+allPipes.add(bottomPipe)
+
 
 # start game screen
 start = False
@@ -56,7 +61,7 @@ while not start:
     screen.blit(startscreen, [0, 0])
 
     for event in pygame.event.get():
-        if event.type==pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if mouse_x>306 and mouse_x< 391 and mouse_y>319 and mouse_y<352:
                 start=True;
@@ -102,7 +107,7 @@ while not done and start:
     screen.blit(bg, [0, 0])
     flappy.update(x, y)
 
-    allPipes.update(xloc, ysize)
+    allPipes.update(xloc, yloc, space)
     all.draw(screen)
     allPipes.draw(screen)
     score(points)
@@ -111,7 +116,7 @@ while not done and start:
     if len(hit_list) != 0:
         done = True  # quit the whole program
         gameOver()
-    y += y_speed/2
+    y += y_speed/2 # what does this do?
     xloc -= pipespeed
 
     if y > ground:
@@ -126,9 +131,12 @@ while not done and start:
 
     if xloc < -80: # 80 px from the last pipe, draw the next one
         xloc = 700  # reset, x coordinate of drawing next pipe
-        ysize = randint(100, 325)  # reset gap between pipes
+        ysize = randint(100, 300)  # reset gap between
 
-    if x > xloc and x < xloc + 3: # made it past the pipe
+        yloc = randint(100, 300) #randomize the pipe placements
+        space = randint(80, 100)  #randomize the gap length
+
+    if x > xloc and x < xloc + 5: # made it past the pipe
         points = (points + 1)
 
     pygame.display.flip()
