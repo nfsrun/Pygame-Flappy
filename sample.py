@@ -48,15 +48,12 @@ points = 0
 lastKey = 0
 
 bottomPipe = Pipe(1, xloc, yloc, space)
-<<<<<<< HEAD
 topPipe = Pipe(0, xloc,bottomPipe.rect.y, space)
-=======
-topPipe = Pipe(0, xloc, bottomPipe.rect.y, space)
->>>>>>> e54f857db25367e373e3961ea57653f3d81fb599
 
 allPipes.add(topPipe) #IMPORTANT THIS GOES FIRST LOOOOL OR IT WONT CALCULATE  IT CORRECTLY OMG
 allPipes.add(bottomPipe)
 
+pygame.draw.rect(screen, black, [0, 300, 700, 60])
 
 # start game screen
 start = False
@@ -85,7 +82,6 @@ def score(points):
     font = pygame.font.Font(None, 20)
     text = font.render("Score: " + str(points), True, black)
     screen.blit(text, [1, 1])
-
 
 while not done and start:
 
@@ -123,27 +119,22 @@ while not done and start:
     y += y_speed/2 # what does this do?
     xloc -= pipespeed
 
-    if y > ground:
+    if y >= ground:
         gameOver()
         y_speed = y_speed/2
         pipespeed = 0
 
-        gameOver()
-        y_speed = y_speed/2
-        pipespeed = 0
+        # gameOver()
+        # y_speed = y_speed/2
+        # pipespeed = 0
         done = True
 
     if xloc < -80: # 80 px from the last pipe, draw the next one
         xloc = 700  # reset, x coordinate of drawing next pipe
-        ysize = randint(100, 300)  # reset gap between
+        ysize = randint(100, 200)  # reset gap between
 
-<<<<<<< HEAD
-        yloc = randint(100, 300) #randomize the pipe placements
+        yloc = randint(80, 200) #randomize the pipe placements
         space = randint(80, 100)  #randomize the gap length
-=======
-        yloc = randint(200, 500) #randomize the pipe placements
-        space = randint(65, 100)  #randomize the gap length
->>>>>>> e54f857db25367e373e3961ea57653f3d81fb599
 
     if x > xloc and x < xloc + 5: # made it past the pipe
         points = (points + 1)
