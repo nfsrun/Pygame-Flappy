@@ -50,7 +50,7 @@ lastKey = 0
 bottomPipe = Pipe(1, xloc, yloc, space)
 topPipe = Pipe(0, xloc,bottomPipe.rect.y, space)
 
-allPipes.add(topPipe) #IMPORTANT THIS GOES FIRST LOOOOL OR IT WONT CALCULATE  IT CORRECTLY OMG
+allPipes.add(topPipe) #IMPORTANT THIS GOES FIRST LOOOOL OR IT WONT CALCULATE IT CORRECTLY OMG
 allPipes.add(bottomPipe)
 
 pygame.draw.rect(screen, black, [0, 300, 700, 60])
@@ -90,7 +90,7 @@ while not done and start:
         if event.type == pygame.QUIT:
             done = True
 
-        if event.type == pygame.KEYDOWN:  # to start the game?
+        if event.type == pygame.KEYDOWN:  # to start the game / control
             if event.key == pygame.K_UP:
                 y_speed = -10
                 lastKey = pygame.K_UP
@@ -112,10 +112,10 @@ while not done and start:
     allPipes.draw(screen)
     score(points)
 
-    hit_list = pygame.sprite.spritecollide(flappy, allPipes, False)
-    if len(hit_list) != 0:
-        done = True  # quit the whole program
-        gameOver()
+    for p in allPipes: #for each on all pipes instead
+        if pygame.sprite.collide_mask(flappy, p) != None: #change to check via collide mask for more accurate check on bird
+            done = True  # quit the whole program
+            gameOver()
     y += y_speed/2 # what does this do?
     xloc -= pipespeed
 

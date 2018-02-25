@@ -6,7 +6,8 @@ class Bird(pygame.sprite.Sprite):
         # Call the parent class (Sprite) constructor
         super(Bird,self).__init__()
         self.image = pygame.image.load("flappy.png")
-        self.rect = pygame.Rect(x, y, 39, 30)
+        self.rect = pygame.image.load("flappy.png")
+        self.mask = pygame.mask.from_surface(self.image) #make a mask out of the image
 
     def update(self, x, y):
         self.rect = pygame.Rect(x, y, 39, 30)
