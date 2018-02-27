@@ -91,20 +91,27 @@ def score(points):
     text = font.render("Score: " + str(points), True, black)
     screen.blit(text, [1, 1])
 
+
+
+screen.blit(bg, [0, 0])
+allPipes.draw(screen)
+screen.blit(flappy.image, [350, 250])
+score(points)
+readyScreen()
+while not ready:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:  # to start the game / control
+            if event.key == pygame.K_UP:
+                ready = True
+
 while not done and start:
-    score(points)
+
     for event in pygame.event.get():  # game interaction
 
         if event.type == pygame.QUIT:
             done = True
-        if not ready:
-            screen.blit(bg, [0, 0])
-            allPipes.draw(screen)
-            screen.blit(flappy.image, [350, 250])
-            readyScreen()
         if event.type == pygame.KEYDOWN:  # to start the game / control
             if event.key == pygame.K_UP:
-                ready = True
                 y_speed = -10
                 lastKey = pygame.K_UP
             elif event.key == pygame.K_w:
@@ -116,45 +123,44 @@ while not done and start:
         if event.type == pygame.KEYUP:
             if event.key == lastKey:  # release key
                 y_speed = 5
-    if ready:
-        screen.blit(bg, [0, 0])
-        flappy.update(x, y)
+    screen.blit(bg, [0, 0])
+    flappy.update(x, y)
 
-        allPipes.update(xloc, yloc, space)
-        all.draw(screen)
-        allPipes.draw(screen)
-        score(points)
+    allPipes.update(xloc, yloc, space)
+    all.draw(screen)
+    allPipes.draw(screen)
+    score(points)
 
-        for p in allPipes: #for each on all pipes instead
-            if pygame.sprite.collide_mask(flappy, p) != None: #change to check via collide mask for more accurate check on bird
-                done = True  # quit the whole program
-                gameOver()
-        y += y_speed/2 # what does this do?
-        xloc -= pipespeed
-
-        if y >= ground:
+    for p in allPipes: #for each on all pipes instead
+        if pygame.sprite.collide_mask(flappy, p) != None: #change to check via collide mask for more accurate check on bird
+            done = True  # quit the whole program
             gameOver()
-            y_speed = y_speed/2
-            pipespeed = 0
+    y += y_speed/2 # what does this do?
+    xloc -= pipespeed
 
-            # gameOver()
-            # y_speed = y_speed/2
-            # pipespeed = 0
-            done = True
+    if y >= ground:
+        gameOver()
+        y_speed = y_speed/2
+        pipespeed = 0
 
-        if xloc < -80: # 80 px from the last pipe, draw the next one
-            xloc = 700  # reset, x coordinate of drawing next pipe
+        # gameOver()
+        # y_speed = y_speed/2
+        # pipespeed = 0
+        done = True
 
-            ysize = random.randint(100, 200)  # reset gap between
+    if xloc < -80: # 80 px from the last pipe, draw the next one
+        xloc = 700  # reset, x coordinate of drawing next pipe
 
-            space = random.randint(80, 100)  #randomize the gap length
-            random.seed()
-            yloc = random.randint(32, 500-space-32) #randomize the pipe placements
+        ysize = random.randint(100, 200)  # reset gap between
 
-        if x > xloc and x < xloc + 5: # made it past the pipe
-            points = (points + 1)
+        space = random.randint(80, 100)  #randomize the gap length
+        random.seed()
+        yloc = random.randint(32, 500-space-32) #randomize the pipe placements
 
-        pygame.display.flip()
-        clock.tick(60)
+    if x > xloc and x < xloc + 5: # made it past the pipe
+        points = (points + 1)
+
+    pygame.display.flip()
+    clock.tick(60)
 
 quit();
