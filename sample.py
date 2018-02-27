@@ -1,7 +1,7 @@
 import pygame
 from pipe import Pipe
 from bird import Bird
-from random import randint
+import random
 
 pygame.init()
 
@@ -11,13 +11,14 @@ bg = pygame.image.load("bkgrnd.png")
 startscreen = pygame.image.load("startscreen.png")
 flappy = Bird()
 
+all = pygame.sprite.Group()
+all.add(flappy)
+
 highScore = 0
 
 size = 700, 500
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Flappy Bird")
-all = pygame.sprite.Group()
-all.add(flappy)
 
 done = False
 clock = pygame.time.Clock()  # will setup frames per second
@@ -35,20 +36,23 @@ y_speed = 0
 ground = 495
 #position to start drawing  pipes
 xloc = 700
-yloc = randint(250, 400) # we will determine this by a random call
+#passage for bird between pipes  will  be randomized per pass
+
+space = random.randint(80, 100)
+ready = False
+yloc = random.randint(32, 500-32-space) # we will determine this by a random call
 
 # size of the pipes LxW
 xsize = 100
-ysize = randint(100, 325)
-#passage for bird between pipes  will  be randomized per pass
-space = 100
+ysize = random.randint(100, 325)
+
 # speed to draw a pipe, make pipe visual on screen
 pipespeed = 3.5
 points = 0
 lastKey = 0
 
 bottomPipe = Pipe(1, xloc, yloc, space)
-topPipe = Pipe(0, xloc,bottomPipe.rect.y, space)
+topPipe = Pipe(0, xloc, bottomPipe.rect.y, space)
 
 allPipes.add(topPipe) #IMPORTANT THIS GOES FIRST LOOOOL OR IT WONT CALCULATE IT CORRECTLY OMG
 allPipes.add(bottomPipe)
@@ -65,8 +69,7 @@ while not start:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if mouse_x>306 and mouse_x< 391 and mouse_y>319 and mouse_y<352:
-                start=True;
-
+                start = True
 pygame.display.flip()
 
 
@@ -77,6 +80,11 @@ def gameOver():  # check if the bird goes too far down
     pygame.display.flip()
     pygame.time.wait(6000)
 
+def readyScreen():
+    font = pygame.font.Font(None, 30)
+    text = font.render("Press up to start", True, red)
+    screen.blit(text, [200, 350])
+    pygame.display.flip()
 
 def score(points):
     font = pygame.font.Font(None, 20)
@@ -84,14 +92,19 @@ def score(points):
     screen.blit(text, [1, 1])
 
 while not done and start:
-
+    score(points)
     for event in pygame.event.get():  # game interaction
 
         if event.type == pygame.QUIT:
             done = True
-
+        if not ready:
+            screen.blit(bg, [0, 0])
+            allPipes.draw(screen)
+            screen.blit(flappy.image, [350, 250])
+            readyScreen()
         if event.type == pygame.KEYDOWN:  # to start the game / control
             if event.key == pygame.K_UP:
+                ready = True
                 y_speed = -10
                 lastKey = pygame.K_UP
             elif event.key == pygame.K_w:
@@ -103,43 +116,45 @@ while not done and start:
         if event.type == pygame.KEYUP:
             if event.key == lastKey:  # release key
                 y_speed = 5
+    if ready:
+        screen.blit(bg, [0, 0])
+        flappy.update(x, y)
 
-    screen.blit(bg, [0, 0])
-    flappy.update(x, y)
+        allPipes.update(xloc, yloc, space)
+        all.draw(screen)
+        allPipes.draw(screen)
+        score(points)
 
-    allPipes.update(xloc, yloc, space)
-    all.draw(screen)
-    allPipes.draw(screen)
-    score(points)
+        for p in allPipes: #for each on all pipes instead
+            if pygame.sprite.collide_mask(flappy, p) != None: #change to check via collide mask for more accurate check on bird
+                done = True  # quit the whole program
+                gameOver()
+        y += y_speed/2 # what does this do?
+        xloc -= pipespeed
 
-    for p in allPipes: #for each on all pipes instead
-        if pygame.sprite.collide_mask(flappy, p) != None: #change to check via collide mask for more accurate check on bird
-            done = True  # quit the whole program
+        if y >= ground:
             gameOver()
-    y += y_speed/2 # what does this do?
-    xloc -= pipespeed
+            y_speed = y_speed/2
+            pipespeed = 0
 
-    if y >= ground:
-        gameOver()
-        y_speed = y_speed/2
-        pipespeed = 0
+            # gameOver()
+            # y_speed = y_speed/2
+            # pipespeed = 0
+            done = True
 
-        # gameOver()
-        # y_speed = y_speed/2
-        # pipespeed = 0
-        done = True
+        if xloc < -80: # 80 px from the last pipe, draw the next one
+            xloc = 700  # reset, x coordinate of drawing next pipe
 
-    if xloc < -80: # 80 px from the last pipe, draw the next one
-        xloc = 700  # reset, x coordinate of drawing next pipe
-        ysize = randint(100, 200)  # reset gap between
+            ysize = random.randint(100, 200)  # reset gap between
 
-        yloc = randint(80, 200) #randomize the pipe placements
-        space = randint(80, 100)  #randomize the gap length
+            space = random.randint(80, 100)  #randomize the gap length
+            random.seed()
+            yloc = random.randint(32, 500-space-32) #randomize the pipe placements
 
-    if x > xloc and x < xloc + 5: # made it past the pipe
-        points = (points + 1)
+        if x > xloc and x < xloc + 5: # made it past the pipe
+            points = (points + 1)
 
-    pygame.display.flip()
-    clock.tick(60)
+        pygame.display.flip()
+        clock.tick(60)
 
 quit();

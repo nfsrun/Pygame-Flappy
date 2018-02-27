@@ -11,18 +11,18 @@ class Pipe(pygame.sprite.Sprite):
         self.yloc = yloc/2
         super(Pipe, self).__init__()
 
-        if (self.o == 1):
+        if self.o == 1:
             self.image = pygame.image.load("pipe.png")
             self.rect = pygame.Rect(x, 500 - yloc, 69, 397)
         
-        if (self.o == 0):
+        if self.o == 0:
             self.image = pygame.image.load("pipeFlip.png")
             self.rect = pygame.Rect(x, 500 - yloc - self.space - 397, 69, 397)
         self.mask = pygame.mask.from_surface(self.image) #make a mask out of the image
 
         # we need to draw both upper and lower pipe, this only draw the same pipe as the very first, without changing the gaps
 
-    def update(self, x, yloc, space):
+    def update(self, x, yloc, space = 80):
         if self.o == 1:
             self.image = pygame.image.load("pipe.png")
             self.rect = pygame.Rect(x, 500 - yloc, 69, 397)
