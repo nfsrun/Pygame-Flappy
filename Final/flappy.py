@@ -1,5 +1,5 @@
 import pygame
-from pipe import Pipe
+from pipes import Pipe
 from bird import Bird
 import random
 
@@ -12,7 +12,9 @@ startscreen = pygame.image.load("startscreen_400x500.png")
 flappy = Bird()
 
 bgm = pygame.mixer.Sound("bgm.wav")
-
+bgmOn = True
+up = pygame.mixer.Sound("up.wav")
+upSound = True
 
 all = pygame.sprite.Group()
 all.add(flappy)
@@ -85,15 +87,23 @@ def gameOver():  # check if the bird goes too far down
 def readyScreen():
     font = pygame.font.Font(None, 30)
     text = font.render("Press up to start", True, red)
+    if upSound:
+        text1 = font.render("SoundFX: On", True, red)
+    else:
+        text1 = font.render("SoundFX: Off", True, red)
+    if bgmOn:
+        text2 = font.render("BGM: On", True, red)
+    else:
+        text2 = font.render("BGM: Off", True, red)
     screen.blit(text, [200, 350])
+    screen.blit(text1, [200, 400])
+    screen.blit(text2, [200, 450])
     pygame.display.flip()
 
 def score(points):
     font = pygame.font.Font(None, 20)
     text = font.render("Score: " + str(points), True, black)
     screen.blit(text, [1, 1])
-
-
 
 screen.blit(bg, [0, 0])
 allPipes.draw(screen)
@@ -107,7 +117,16 @@ while not ready:
             y_speed = -10
             lastKey = pygame.K_UP
             ready = True
-            bgm.play()
+            if bgmOn:
+                bgm.play()
+            if upSound:
+                up.play()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if mouse_x>156 and mouse_x< 241 and mouse_y>319 and mouse_y<352:
+                start = not start
+            if mouse_x>156 and mouse_x< 241 and mouse_y>319 and mouse_y<352:
+                bgmOn = not bgmOn
 while not done and start:
 
     for event in pygame.event.get():  # game interaction
@@ -118,12 +137,18 @@ while not done and start:
             if event.key == pygame.K_UP:
                 y_speed = -10
                 lastKey = pygame.K_UP
+                if upSound:
+                    up.play()
             elif event.key == pygame.K_w:
                 y_speed = -10
                 lastKey = pygame.K_w
+                if upSound:
+                    up.play()
             elif event.key == pygame.K_SPACE:
                 y_speed = -10
                 lastKey = pygame.K_SPACE
+                if upSound:
+                    up.play()
         if event.type == pygame.KEYUP:
             if event.key == lastKey:  # release key
                 y_speed = 5
