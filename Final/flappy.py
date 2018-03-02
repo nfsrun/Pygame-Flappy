@@ -14,12 +14,12 @@ flappy = Bird()
 bgm = pygame.mixer.Sound("bgm.wav")
 bgmOn = True
 up = pygame.mixer.Sound("up.wav")
+fail = pygame.mixer.Sound("fail.wav")
 upSound = True
 
 all = pygame.sprite.Group()
 all.add(flappy)
 
-highScore = 0
 
 size = 400, 500
 screen = pygame.display.set_mode(size)
@@ -72,11 +72,13 @@ while not start:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            if mouse_x>156 and mouse_x< 241 and mouse_y>319 and mouse_y<352:
+            if mouse_x > 156 and mouse_x < 241 and mouse_y > 319 and mouse_y < 352:
                 start = True
 pygame.display.flip()
 
 def gameOver():  # check if the bird goes too far down
+    if upSound:
+        fail.play()
     bgm.stop()
     font = pygame.font.Font(None, 30)
     text = font.render("Game over", True, red)
@@ -86,18 +88,18 @@ def gameOver():  # check if the bird goes too far down
 
 def readyScreen():
     font = pygame.font.Font(None, 30)
-    text = font.render("Press up to start", True, red)
-    if upSound:
-        text1 = font.render("SoundFX: On", True, red)
-    else:
-        text1 = font.render("SoundFX: Off", True, red)
-    if bgmOn:
-        text2 = font.render("BGM: On", True, red)
-    else:
-        text2 = font.render("BGM: Off", True, red)
-    screen.blit(text, [200, 350])
-    screen.blit(text1, [200, 400])
-    screen.blit(text2, [200, 450])
+    text0 = font.render("Press up to start", True, red)
+    screen.blit(text0, [125, 300])
+    text1 = font.render("Click on feature to change setting. ", True, red)
+    screen.blit(text1, [30, 350])
+    text2 = font.render("SoundFX: On", True, red)
+    text3 = font.render("BGM: On", True, red)
+    if not upSound:
+        text2 = font.render("SoundFX: Off", True, red)
+    screen.blit(text2, [145, 400])
+    if not bgmOn:
+        text3 = font.render("BGM: Off", True, red)
+    screen.blit(text3, [160, 450])
     pygame.display.flip()
 
 def score(points):
@@ -113,6 +115,16 @@ readyScreen()
 
 while not ready:
     for event in pygame.event.get():
+        print(pygame.mouse.get_pos())
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if mouse_x >= 145 and mouse_x <= 230 and mouse_y >= 400 and mouse_y <= 420:
+                upSound = not upSound
+            if mouse_x >= 160 and mouse_x <= 210 and mouse_y >= 450 and mouse_y <= 470:
+                bgmOn = not bgmOn
+            screen.blit(bg, [0, 0])
+            screen.blit(flappy.image, [150, 250])
+            readyScreen()
         if event.type == pygame.KEYDOWN:  # to start the game / control
             y_speed = -10
             lastKey = pygame.K_UP
@@ -121,12 +133,7 @@ while not ready:
                 bgm.play()
             if upSound:
                 up.play()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            if mouse_x>156 and mouse_x< 241 and mouse_y>319 and mouse_y<352:
-                start = not start
-            if mouse_x>156 and mouse_x< 241 and mouse_y>319 and mouse_y<352:
-                bgmOn = not bgmOn
+
 while not done and start:
 
     for event in pygame.event.get():  # game interaction
@@ -183,7 +190,6 @@ while not done and start:
         space = random.randint(80, 100)  #randomize the gap length
         random.seed()
         yloc = random.randint(32, 400-space-32) #randomize the pipe placements
-#or xloc== 0
     if x > xloc and x < xloc + 5 : # made it past the pipe
         points = (points + 1)
 
