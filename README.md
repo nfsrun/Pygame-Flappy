@@ -1,6 +1,6 @@
 # Pygame-Flappy
 ## Created By Shaila Hirji and Kevin Tran
-## Finished Version: 1.00 - First Complete Upload - 03/16/2018
+## Finished Version: 1.00 - First Complete Upload - 03/06/2018
 ## CS320 - Assignment 3
 ## Professor Fatma Serce
 
